@@ -1,10 +1,7 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Data;
 using System.Data.Entity;
 using System.Linq;
 using System.Net;
-using System.Web;
 using System.Web.Mvc;
 using Kissi.Models;
 
@@ -51,8 +48,24 @@ namespace Kissi.Controllers
             if (ModelState.IsValid)
             {
                 db.Departments.Add(department);
-                db.SaveChanges();
-                return RedirectToAction("Index");
+                try
+                {
+                    db.SaveChanges();
+                    return RedirectToAction("Index");
+                }
+                catch (Exception ex)
+                {
+                    if (ex.InnerException != null
+                        && ex.InnerException.InnerException != null
+                        && ex.InnerException.InnerException.Message.Contains("_Index"))
+                    {
+                        ModelState.AddModelError(string.Empty, "The are record we the same name");
+                    }
+                    else
+                    {
+                        ModelState.AddModelError(string.Empty, ex.Message);
+                    }
+                }
             }
 
             return View(department);
@@ -83,8 +96,24 @@ namespace Kissi.Controllers
             if (ModelState.IsValid)
             {
                 db.Entry(department).State = EntityState.Modified;
-                db.SaveChanges();
-                return RedirectToAction("Index");
+                try
+                {
+                    db.SaveChanges();
+                    return RedirectToAction("Index");
+                }
+                catch (Exception ex)
+                {
+                    if (ex.InnerException != null
+                        && ex.InnerException.InnerException != null
+                        && ex.InnerException.InnerException.Message.Contains("_Index"))
+                    {
+                        ModelState.AddModelError(string.Empty, "The are record we the same name");
+                    }
+                    else
+                    {
+                        ModelState.AddModelError(string.Empty, ex.Message);
+                    }
+                }
             }
             return View(department);
         }
@@ -111,8 +140,25 @@ namespace Kissi.Controllers
         {
             Department department = db.Departments.Find(id);
             db.Departments.Remove(department);
-            db.SaveChanges();
-            return RedirectToAction("Index");
+            try
+            {
+                db.SaveChanges();
+                return RedirectToAction("Index");
+            }
+            catch (Exception ex)
+            {
+                if (ex.InnerException !=null 
+                    && ex.InnerException.InnerException !=null 
+                    && ex.InnerException.InnerException.Message.Contains("REFERENCE"))
+                {
+                    ModelState.AddModelError(string.Empty, "The record can't be delete because it's has related record");
+                }
+                else
+                {
+                    ModelState.AddModelError(string.Empty, ex.Message);
+                }
+            }
+            return View(department);
         }
 
         protected override void Dispose(bool disposing)

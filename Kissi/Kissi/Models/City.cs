@@ -15,8 +15,11 @@ namespace Kissi.Models
         [Display(Name = "City")]
         public string Name { get; set; }
         [Required(ErrorMessage = "The field {0} is required")]
+        [Range(1, double.MaxValue, ErrorMessage = "The field {0} can be empty")]
         public int DepartmentId { get; set; }
 
         public virtual Department Department { get; set; }
+        public virtual ICollection<Company> Companies { get; set; }
+
     }
 }
