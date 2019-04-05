@@ -4,6 +4,7 @@ using System.Net;
 using System.Web.Mvc;
 using Kissi.Models;
 using Kissi.Classes;
+using System;
 
 namespace Kissi.Controllers
 {
@@ -50,8 +51,24 @@ namespace Kissi.Controllers
             if (ModelState.IsValid)
             {
                 db.Cities.Add(city);
-                db.SaveChanges();
-                return RedirectToAction("Index");
+                try
+                {
+                    db.SaveChanges();
+                    return RedirectToAction("Index");
+                }
+                catch (Exception ex)
+                {
+                    if (ex.InnerException != null
+                        && ex.InnerException.InnerException != null
+                        && ex.InnerException.InnerException.Message.Contains("_Index"))
+                    {
+                        ModelState.AddModelError(string.Empty, "The are record we the same name in department");
+                    }
+                    else
+                    {
+                        ModelState.AddModelError(string.Empty, ex.Message);
+                    }
+                }
             }
 
             ViewBag.DepartmentId = new SelectList(CombosHelper.GetDepartment(), "DepartmentId", "Name", city.DepartmentId);
@@ -84,8 +101,24 @@ namespace Kissi.Controllers
             if (ModelState.IsValid)
             {
                 db.Entry(city).State = EntityState.Modified;
-                db.SaveChanges();
-                return RedirectToAction("Index");
+                try
+                {
+                    db.SaveChanges();
+                    return RedirectToAction("Index");
+                }
+                catch (Exception ex)
+                {
+                    if (ex.InnerException != null
+                        && ex.InnerException.InnerException != null
+                        && ex.InnerException.InnerException.Message.Contains("_Index"))
+                    {
+                        ModelState.AddModelError(string.Empty, "The are record we the same name in department");
+                    }
+                    else
+                    {
+                        ModelState.AddModelError(string.Empty, ex.Message);
+                    }
+                }
             }
             ViewBag.DepartmentId = new SelectList(CombosHelper.GetDepartment(), "DepartmentId", "Name", city.DepartmentId);
             return View(city);

@@ -1,5 +1,7 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using System.Web;
 
 namespace Kissi.Models
 {
@@ -30,8 +32,12 @@ namespace Kissi.Models
         [Required(ErrorMessage = "The field {0} is required")]
         [Range(1, double.MaxValue, ErrorMessage = "The field {0} can be empty")]
         public int CityId { get; set; }
+        [NotMapped]
+        public HttpPostedFileBase LogoFile { get; set; }
         public virtual Department Department { get; set; }
         public virtual City City { get; set; }
+        public virtual ICollection<User> Users { get; set; }
+
 
     }
 }

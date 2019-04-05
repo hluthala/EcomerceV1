@@ -15,11 +15,20 @@ namespace Kissi.Classes
             departments.Add(new Department
             {
                 DepartmentId=0,
-                Name="[Select department ...]",
+                Name="[Select a department ...]",
             });
             return departments.OrderBy(c => c.Name).ToList();
         }
-
+        public static List<City> GetCities()
+        {
+            var cities = db.Cities.ToList();
+            cities.Add(new City
+            {
+                CityId = 0,
+                Name = "[Select a city ...]",
+            });
+            return cities.OrderBy(c => c.Name).ToList();
+        }
         public void Dispose()
         {
            db.Dispose();

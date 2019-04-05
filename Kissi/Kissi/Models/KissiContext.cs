@@ -19,5 +19,7 @@ namespace Kissi.Models
         public System.Data.Entity.DbSet<Kissi.Models.City> Cities { get; set; }
 
         public System.Data.Entity.DbSet<Kissi.Models.Company> Companies { get; set; }
+
+        public System.Data.Entity.DbSet<Kissi.Models.User> Users { get; set; }
     }
 }

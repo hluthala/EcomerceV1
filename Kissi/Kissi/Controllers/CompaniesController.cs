@@ -3,6 +3,7 @@ using System.Linq;
 using System.Net;
 using System.Web.Mvc;
 using Kissi.Models;
+using Kissi.Classes;
 
 namespace Kissi.Controllers
 {
@@ -35,8 +36,8 @@ namespace Kissi.Controllers
         // GET: Companies/Create
         public ActionResult Create()
         {
-            ViewBag.CityId = new SelectList(db.Cities, "CityId", "Name");
-            ViewBag.DepartmentId = new SelectList(db.Departments, "DepartmentId", "Name");
+            ViewBag.CityId = new SelectList(CombosHelper.GetCities(), "CityId", "Name");
+            ViewBag.DepartmentId = new SelectList(CombosHelper.GetDepartment(), "DepartmentId", "Name");
             return View();
         }
 
@@ -45,17 +46,37 @@ namespace Kissi.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Create([Bind(Include = "CompanyId,Name,Phone,Address,Logo,DepartmentId,CityId")] Company company)
+        public ActionResult Create(Company company)
         {
             if (ModelState.IsValid)
             {
+               
                 db.Companies.Add(company);
                 db.SaveChanges();
+               
+               
+
+                if (company.LogoFile != null)
+                {
+                    var folder = "~/Content/Logos";
+                    var file = string.Format("{0}.jpg", company.CompanyId);
+                    var response= FilesHelper.UploadPhoto(company.LogoFile, folder,file);
+                    if (response)
+                    {
+                        
+                        var pic = string.Format("{0}/{1}.jpg", folder, company.CompanyId);
+                        company.Logo = pic;
+                        db.Entry(company).State = EntityState.Modified;
+                        db.SaveChanges(); db.Entry(company).State = EntityState.Modified;
+                        db.SaveChanges();
+                    }
+                }
+               
                 return RedirectToAction("Index");
             }
 
-            ViewBag.CityId = new SelectList(db.Cities, "CityId", "Name", company.CityId);
-            ViewBag.DepartmentId = new SelectList(db.Departments, "DepartmentId", "Name", company.DepartmentId);
+            ViewBag.CityId = new SelectList(CombosHelper.GetCities(), "CityId", "Name", company.CityId);
+            ViewBag.DepartmentId = new SelectList(CombosHelper.GetDepartment(), "DepartmentId", "Name", company.DepartmentId);
             return View(company);
         }
 
@@ -71,8 +92,8 @@ namespace Kissi.Controllers
             {
                 return HttpNotFound();
             }
-            ViewBag.CityId = new SelectList(db.Cities, "CityId", "Name", company.CityId);
-            ViewBag.DepartmentId = new SelectList(db.Departments, "DepartmentId", "Name", company.DepartmentId);
+            ViewBag.CityId = new SelectList(CombosHelper.GetCities(), "CityId", "Name", company.CityId);
+            ViewBag.DepartmentId = new SelectList(CombosHelper.GetDepartment(), "DepartmentId", "Name", company.DepartmentId);
             return View(company);
         }
 
@@ -81,16 +102,34 @@ namespace Kissi.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Edit([Bind(Include = "CompanyId,Name,Phone,Address,Logo,DepartmentId,CityId")] Company company)
+        public ActionResult Edit( Company company)
         {
             if (ModelState.IsValid)
             {
+               
+
+                if (company.LogoFile != null)
+                {
+                    var folder = "~/Content/Logos";
+                    var pic = string.Empty;
+
+                    var file = string.Format("{0}.jpg", company.CompanyId);
+                    var response = FilesHelper.UploadPhoto(company.LogoFile, folder, file);
+                    if (response)
+                    {
+
+                        pic = string.Format("{0}/{1}.jpg", folder, file);
+                        company.Logo = pic;
+                        
+                    }
+                }
+                
                 db.Entry(company).State = EntityState.Modified;
                 db.SaveChanges();
                 return RedirectToAction("Index");
             }
-            ViewBag.CityId = new SelectList(db.Cities, "CityId", "Name", company.CityId);
-            ViewBag.DepartmentId = new SelectList(db.Departments, "DepartmentId", "Name", company.DepartmentId);
+            ViewBag.CityId = new SelectList(CombosHelper.GetCities(), "CityId", "Name", company.CityId);
+            ViewBag.DepartmentId = new SelectList(CombosHelper.GetDepartment(), "DepartmentId", "Name", company.DepartmentId);
             return View(company);
         }
 
@@ -118,6 +157,12 @@ namespace Kissi.Controllers
             db.Companies.Remove(company);
             db.SaveChanges();
             return RedirectToAction("Index");
+        }
+        public JsonResult Getcities(int departmentId)
+        {
+            db.Configuration.ProxyCreationEnabled = false;
+            var cities = db.Cities.Where(m => m.DepartmentId == departmentId);
+            return Json(cities);
         }
 
         protected override void Dispose(bool disposing)
