@@ -8,6 +8,7 @@ using System;
 
 namespace Kissi.Controllers
 {
+    [Authorize(Roles = "Admin")]
     public class CitiesController : Controller
     {
         private KissiContext db = new KissiContext();

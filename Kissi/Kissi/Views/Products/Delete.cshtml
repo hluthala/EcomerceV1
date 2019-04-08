@@ -1,0 +1,176 @@
+﻿@model Kissi.Models.Product
+
+@{
+    ViewBag.Title = "Delete";
+}
+
+<h2>Delete</h2>
+
+<h3>Are you sure you want to delete this?</h3>
+<div>
+    <h4>Product</h4>
+    <hr />
+    <dl class="dl-horizontal">
+        <dt>
+            @Html.DisplayNameFor(model => model.Category.Description)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Category.Description)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.Company.Name)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Company.Name)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.Tax.Description)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Tax.Description)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.Description)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Description)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.BarCode)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.BarCode)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.Price)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Price)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.Image)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Image)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.Dose)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Dose)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.Posologie)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Posologie)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.Indication)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Indication)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.Ordonance)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Ordonance)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.FormePharma)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.FormePharma)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.Voieadmis)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Voieadmis)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.Conditionnement)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Conditionnement)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.Types)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Types)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.Fabricant)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Fabricant)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.Origine)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Origine)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.ContreIndication)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.ContreIndication)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.EffetSecond)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.EffetSecond)
+        </dd>
+
+    </dl>
+
+    @using (Html.BeginForm()) {
+        @Html.AntiForgeryToken()
+
+        <div class="form-actions no-color">
+            <input type="submit" value="Delete" class="btn btn-default" /> |
+            @Html.ActionLink("Back to List", "Index")
+        </div>
+    }
+</div>

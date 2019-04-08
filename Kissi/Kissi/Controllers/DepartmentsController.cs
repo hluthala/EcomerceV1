@@ -7,6 +7,7 @@ using Kissi.Models;
 
 namespace Kissi.Controllers
 {
+    [Authorize(Roles = "Admin")]
     public class DepartmentsController : Controller
     {
         private KissiContext db = new KissiContext();

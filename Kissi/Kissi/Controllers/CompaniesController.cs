@@ -7,6 +7,8 @@ using Kissi.Classes;
 
 namespace Kissi.Controllers
 {
+    [Authorize(Roles = "Admin")]
+
     public class CompaniesController : Controller
     {
         private KissiContext db = new KissiContext();
@@ -67,8 +69,8 @@ namespace Kissi.Controllers
                         var pic = string.Format("{0}/{1}.jpg", folder, company.CompanyId);
                         company.Logo = pic;
                         db.Entry(company).State = EntityState.Modified;
-                        db.SaveChanges(); db.Entry(company).State = EntityState.Modified;
                         db.SaveChanges();
+                     
                     }
                 }
                
