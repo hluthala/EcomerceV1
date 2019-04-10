@@ -142,7 +142,7 @@ namespace Kissi.Controllers
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            Company company = db.Companies.Find(id);
+            var company = db.Companies.Find(id);
             if (company == null)
             {
                 return HttpNotFound();

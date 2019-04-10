@@ -33,40 +33,7 @@
             @Html.DisplayNameFor(model => model.Image)
         </th>
         <th>
-            @Html.DisplayNameFor(model => model.Dose)
-        </th>
-        <th>
-            @Html.DisplayNameFor(model => model.Posologie)
-        </th>
-        <th>
-            @Html.DisplayNameFor(model => model.Indication)
-        </th>
-        <th>
-            @Html.DisplayNameFor(model => model.Ordonance)
-        </th>
-        <th>
-            @Html.DisplayNameFor(model => model.FormePharma)
-        </th>
-        <th>
-            @Html.DisplayNameFor(model => model.Voieadmis)
-        </th>
-        <th>
-            @Html.DisplayNameFor(model => model.Conditionnement)
-        </th>
-        <th>
-            @Html.DisplayNameFor(model => model.Types)
-        </th>
-        <th>
-            @Html.DisplayNameFor(model => model.Fabricant)
-        </th>
-        <th>
-            @Html.DisplayNameFor(model => model.Origine)
-        </th>
-        <th>
-            @Html.DisplayNameFor(model => model.ContreIndication)
-        </th>
-        <th>
-            @Html.DisplayNameFor(model => model.EffetSecond)
+            @Html.DisplayNameFor(model => model.Stock)
         </th>
         <th></th>
     </tr>
@@ -85,50 +52,18 @@
         <td>
             @Html.DisplayFor(modelItem => item.Description)
         </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.BarCode)
-        </td>
+       
         <td>
             @Html.DisplayFor(modelItem => item.Price)
         </td>
         <td>
-            @Html.DisplayFor(modelItem => item.Image)
+            @if (!string.IsNullOrEmpty(item.Image))
+            {
+                <img src="@Url.Content(item.Image)" alt="Image" style="width:100px;height:150px;max-width: 100%; height: auto;" />
+            }
         </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.Dose)
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.Posologie)
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.Indication)
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.Ordonance)
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.FormePharma)
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.Voieadmis)
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.Conditionnement)
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.Types)
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.Fabricant)
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.Origine)
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.ContreIndication)
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.EffetSecond)
+        <td align="right">
+            @Html.DisplayFor(modelItem => item.Stock)
         </td>
         <td>
             @Html.ActionLink("Edit", "Edit", new { id=item.ProductId }, new { @class = "btn btn-warning" }) 

@@ -63,7 +63,10 @@
         </dt>
 
         <dd>
-            @Html.DisplayFor(model => model.Image)
+            @if (!string.IsNullOrEmpty(Model.Image))
+            {
+                <img src="@Url.Content(Model.Image)" alt="Image" style="width:100px;height:150px;max-width: 100%; height: auto;" />
+            }
         </dd>
 
         <dt>
@@ -168,3 +171,14 @@
     @Html.ActionLink("Edit", "Edit", new { id = Model.ProductId }) |
     @Html.ActionLink("Back to List", "Index")
 </p>
+<div class="row" >
+    <div class="col-md-4">
+
+    </div>
+    <div class="col-md-4">
+
+    </div>
+    <div class="col-md-4">
+
+    </div>
+</div>

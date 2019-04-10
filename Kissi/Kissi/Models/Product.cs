@@ -19,7 +19,7 @@ namespace Kissi.Models
         public int CompanyId { get; set; }
         [Required(ErrorMessage = "The field {0} is required")]
         [MaxLength(50, ErrorMessage = "The field {0} must be at least {1} chracteres")]
-        [Display(Name = "Tax")]
+        [Display(Name = "Description")]
         [Index("Product_CompanyId_Description_Index", 2, IsUnique = true)]
         public string Description { get; set; }
         [Required(ErrorMessage = "The field {0} is required")]
@@ -47,6 +47,9 @@ namespace Kissi.Models
         [MaxLength(20, ErrorMessage = "The field {0} must be at least {1} chracteres")]
         [Display(Name = "Dose")]
         public string Dose { get; set; }
+        [MaxLength(20, ErrorMessage = "The field {0} must be at least {1} chracteres")]
+        [Display(Name = "Composition")]
+        public string Composition { get; set; }
         [DataType(DataType.MultilineText)]
         public string Posologie { get; set; }
         [DataType(DataType.MultilineText)]
@@ -72,8 +75,11 @@ namespace Kissi.Models
         [Display(Name = "Effet sécondaire")]
         [DataType(DataType.MultilineText)]
         public string EffetSecond { get; set; }
+        [DisplayFormat(DataFormatString = "{0:N2}", ApplyFormatInEditMode = false)]
+        public double Stock { get { return Inventories.Sum(i => i.Stock); } }
         public virtual Company Company { get; set; }
         public virtual Category Category { get; set; }
         public virtual Tax Tax { get; set; }
+        public virtual ICollection<Inventory> Inventories { get; set; }
     }
 }

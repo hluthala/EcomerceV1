@@ -7,6 +7,7 @@ using Kissi.Classes;
 
 namespace Kissi.Controllers
 {
+    [Authorize(Roles = "User")]
     public class ProductsController : Controller
     {
         private KissiContext db = new KissiContext();
@@ -31,7 +32,7 @@ namespace Kissi.Controllers
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            Product product = db.Products.Find(id);
+            var product = db.Products.Find(id);
             if (product == null)
             {
                 return HttpNotFound();
