@@ -81,5 +81,8 @@ namespace Kissi.Models
         public virtual Category Category { get; set; }
         public virtual Tax Tax { get; set; }
         public virtual ICollection<Inventory> Inventories { get; set; }
+        public virtual ICollection<OrderDetail> OrderDetails { get; set; }
+        public virtual ICollection<OrderDetailTmp> OrderDetailTmps { get; set; }
+
     }
 }

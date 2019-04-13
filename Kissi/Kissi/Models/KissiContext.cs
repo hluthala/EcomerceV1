@@ -16,9 +16,9 @@ namespace Kissi.Models
 
         public DbSet<Department> Departments { get; set; }
 
-        public System.Data.Entity.DbSet<Kissi.Models.City> Cities { get; set; }
+        public DbSet<City> Cities { get; set; }
 
-        public System.Data.Entity.DbSet<Kissi.Models.Company> Companies { get; set; }
+        public DbSet<Company> Companies { get; set; }
 
         public DbSet<User> Users { get; set; }
 
@@ -31,5 +31,13 @@ namespace Kissi.Models
         public DbSet<Warehouse> Warehouses { get; set; }
 
         public DbSet<Inventory> Inventories { get; set; }
+
+        public DbSet<Customer> Customers { get; set; }
+
+        public DbSet<State> States { get; set; }
+        public DbSet<Order> Orders { get; set; }
+        public DbSet<OrderDetail> OrderDetails { get; set; }
+        public DbSet<OrderDetailTmp> OrderDetailTmps { get; set; }
+
     }
 }
