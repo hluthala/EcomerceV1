@@ -20,9 +20,9 @@ namespace Kissi.Classes
             });
             return departments.OrderBy(c => c.Name).ToList();
         }
-        public static List<City> GetCities()
+        public static List<City> GetCities(int departmentid)
         {
-            var cities = db.Cities.ToList();
+            var cities = db.Cities.Where(c=>c.DepartmentId==departmentid).ToList();
             cities.Add(new City
             {
                 CityId = 0,
