@@ -1,10 +1,8 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Data;
 using System.Data.Entity;
 using System.Linq;
 using System.Net;
-using System.Web;
 using System.Web.Mvc;
 using Kissi.Models;
 using Kissi.Classes;
@@ -28,6 +26,22 @@ namespace Kissi.Controllers
             var orders = db.Orders.Include(o => o.Customer).Include(o => o.State).Where(c=>c.CompanyId==user.CompanyId);
             return View(orders.ToList());
         }
+        public ActionResult DeleteProduct(int? id)
+        {
+            if (id == null)
+            {
+                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+            }
+            var ordetailtmp = db.OrderDetailTmps.Where(odt => odt.UserName == User.Identity.Name && odt.ProductId == id).FirstOrDefault();
+            if (ordetailtmp == null)
+            {
+                return HttpNotFound();
+            }
+            db.OrderDetailTmps.Remove(ordetailtmp);
+            db.SaveChanges();
+            return RedirectToAction("Create");
+          //  return View(order);
+        }
         public ActionResult AddProduct()
         {
             var user = db.Users.Where(c => c.UserName == User.Identity.Name).FirstOrDefault();
@@ -37,22 +51,33 @@ namespace Kissi.Controllers
         [HttpPost]
         public ActionResult AddProduct(AddProductView view)
         {
+            var user = db.Users.Where(c => c.UserName == User.Identity.Name).FirstOrDefault();
+
             if (ModelState.IsValid)
             {
-                var product = db.Products.Find(view.ProductId);
-                var ordetailtmp = new OrderDetailTmp {
-                    Description=product.Description,
-                    Price=product.Price,
-                    ProductId=product.ProductId,
-                    Quantity=view.Quantity,
-                    TaxRate=product.Tax.Rate,
-                    UserName=User.Identity.Name,
-                };
-                db.OrderDetailTmps.Add(ordetailtmp);
+                var ordetailtmp = db.OrderDetailTmps.Where(odt => odt.UserName == User.Identity.Name && odt.ProductId == view.ProductId).FirstOrDefault();
+                if (ordetailtmp==null)
+                {
+                    var product = db.Products.Find(view.ProductId);
+                    ordetailtmp = new OrderDetailTmp
+                    {
+                        Description = product.Description,
+                        Price = product.Price,
+                        ProductId = product.ProductId,
+                        Quantity = view.Quantity,
+                        TaxRate = product.Tax.Rate,
+                        UserName = User.Identity.Name,
+                    };
+                    db.OrderDetailTmps.Add(ordetailtmp);
+                }
+                else
+                {
+                    ordetailtmp.Quantity += view.Quantity;
+                    db.Entry(ordetailtmp).State = EntityState.Modified;
+                }
                 db.SaveChanges();
                 return RedirectToAction("Create");
             }
-            var user = db.Users.Where(c => c.UserName == User.Identity.Name).FirstOrDefault();
             ViewBag.ProductId = new SelectList(CombosHelper.GetProducts(user.CompanyId), "ProductId", "Description");
             return View();
         }
@@ -87,6 +112,7 @@ namespace Kissi.Controllers
                 Date = DateTime.Now,
                 Details = db.OrderDetailTmps.Where(odt => odt.UserName == User.Identity.Name).ToList(),
             };
+            view.Details = db.OrderDetailTmps.Where(odt => odt.UserName == User.Identity.Name).ToList();
             return View(view);
         }
 
@@ -95,20 +121,23 @@ namespace Kissi.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Create([Bind(Include = "OrderId,CustomerId,StateId,Date,Remarks")] Order order)
+        public ActionResult Create(NewOrderView view)
         {
             if (ModelState.IsValid)
             {
-                db.Orders.Add(order);
-                db.SaveChanges();
-                return RedirectToAction("Index");
+                Response response = MovementsHelper.NewOrder(view, User.Identity.Name);
+                if (response.Succeeded)
+                {
+                    return RedirectToAction("Index");
+                }
+                ModelState.AddModelError(string.Empty, response.Message);
             }
             var user = db.Users.Where(c => c.UserName == User.Identity.Name).FirstOrDefault();
 
-            ViewBag.CustomerId = new SelectList(CombosHelper.GetCustomers(user.CompanyId), "CustomerId", "FullName", order.CustomerId);
+            ViewBag.CustomerId = new SelectList(CombosHelper.GetCustomers(user.CompanyId), "CustomerId", "FullName", view.CustomerId);
             //ViewBag.StateId = new SelectList(db.States, "StateId", "Description", order.StateId);
            
-            return View(order);
+            return View(view);
         }
 
         // GET: Orders/Edit/5

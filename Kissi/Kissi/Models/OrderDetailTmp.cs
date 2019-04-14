@@ -26,6 +26,7 @@ namespace Kissi.Models
         [Required(ErrorMessage = "The field {0} is required")]
         [Range(0, double.MaxValue, ErrorMessage = "The {0} must be between {1} and {2}")]
         [Display(Name = "Tax rate")]
+        [DisplayFormat(DataFormatString = "{0:P2}", ApplyFormatInEditMode = false)]
         public double TaxRate { get; set; }
 
         [Required(ErrorMessage = "The field {0} is required")]

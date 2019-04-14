@@ -53,7 +53,7 @@
 
                 <div class="form-group">
                     <div class="col-md-offset-2 col-md-10">
-                        <input type="submit" value="Create" class="btn btn-primary" />
+                        <input type="submit" value="Save order" class="btn btn-primary" />
                         @Html.ActionLink("Add product", "AddProduct", new { }, new { @class = "btn btn-warning" })
                         @Html.ActionLink("Back to List", "Index", new { }, new { @class = "btn btn-success" })
                     </div>
@@ -73,7 +73,81 @@
 }
 else
 {
-        
+    <table class="table">
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.Details[0].Product.Image)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Details[0].Description)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Details[0].TaxRate)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Details[0].Price)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Details[0].Quantity)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Details[0].Value)
+            </th>
+          
+            <th></th>
+        </tr>
+
+        @foreach (var item in Model.Details)
+        {
+            <tr>
+                <td>
+                    @if (!string.IsNullOrEmpty(item.Product.Image))
+                    {
+                        <img src="@Url.Content(item.Product.Image)" alt="Image" style="width:100px;height:150px;max-width: 100%; height: auto;" />
+                    }
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Description)
+                </td>
+                <td align="right">
+                    @Html.DisplayFor(modelItem => item.TaxRate)
+                </td>
+                <td align="right">
+                    @Html.DisplayFor(modelItem => item.Price)
+                </td>
+                <td align="right">
+                    @Html.DisplayFor(modelItem => item.Quantity)
+                </td>
+
+                <td align="right">
+                    @Html.DisplayFor(modelItem => item.Value)
+                </td>
+                <td>
+                    @Html.ActionLink("Delete", "DeleteProduct", new { id = item.ProductId }, new { @class = "btn btn-danger", onclick = "return confirm('Are you sure you wish to delete this record?');" })
+                </td>
+            </tr>
+        }
+        <tr>
+            <td></td>
+            <td>
+            </td>
+            <td>
+            
+            </td>
+            <td align="right">
+               <strong>Total</strong> 
+            </td>
+            <td align="right">
+                <strong> @Html.DisplayFor(modelItem => Model.TotalQuantity)</strong> 
+            </td>
+            <td align="right">
+                <strong>  @Html.DisplayFor(modelItem => Model.TotalValue)</strong>
+            </td>
+            
+        </tr>
+
+    </table>
+
 }
 
 @section Scripts {
