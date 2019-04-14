@@ -46,7 +46,7 @@ namespace Kissi.Controllers
         {
             var user = db.Users.Where(c => c.UserName == User.Identity.Name).FirstOrDefault();
             ViewBag.ProductId = new SelectList(CombosHelper.GetProducts(user.CompanyId), "ProductId", "Description");
-            return View();
+            return PartialView();
         }
         [HttpPost]
         public ActionResult AddProduct(AddProductView view)
@@ -79,7 +79,7 @@ namespace Kissi.Controllers
                 return RedirectToAction("Create");
             }
             ViewBag.ProductId = new SelectList(CombosHelper.GetProducts(user.CompanyId), "ProductId", "Description");
-            return View();
+            return PartialView();
         }
         // GET: Orders/Details/5
         public ActionResult Details(int? id)

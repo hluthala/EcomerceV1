@@ -160,12 +160,12 @@ namespace Kissi.Controllers
             db.SaveChanges();
             return RedirectToAction("Index");
         }
-        public JsonResult Getcities(int departmentId)
-        {
-            db.Configuration.ProxyCreationEnabled = false;
-            var cities = db.Cities.Where(m => m.DepartmentId == departmentId);
-            return Json(cities);
-        }
+        //public JsonResult Getcities(int departmentId)
+        //{
+        //    db.Configuration.ProxyCreationEnabled = false;
+        //    var cities = db.Cities.Where(m => m.DepartmentId == departmentId);
+        //    return Json(cities);
+        //}
 
         protected override void Dispose(bool disposing)
         {

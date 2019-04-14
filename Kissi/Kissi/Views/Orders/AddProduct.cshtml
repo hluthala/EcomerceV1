@@ -1,7 +1,5 @@
 ﻿@model Kissi.Models.AddProductView
-@{
-    ViewBag.Title = "AddProduct";
-}
+
 
 @*<h2>AddProduct</h2>*@
 
@@ -10,8 +8,7 @@
     @Html.AntiForgeryToken()
 
     <div class="form-horizontal">
-        <h4>Add Product</h4>
-        <hr />
+     
         @Html.ValidationSummary(true, "", new { @class = "text-danger" })
         <div class="form-group">
             @Html.LabelFor(model => model.ProductId, htmlAttributes: new { @class = "control-label col-md-2" })
