@@ -17,9 +17,21 @@ namespace Kissi.Controllers
     {
         private ApplicationSignInManager _signInManager;
         private ApplicationUserManager _userManager;
-
+        private KissiContext db = new KissiContext();
         public AccountController()
         {
+        }
+        public void Logo(LoginViewModel model)
+        {
+            var user = db.Users.Where(u => u.UserName == model.Email).FirstOrDefault();
+            if (user != null)
+            {
+                var company = db.Companies.Find(user.CompanyId);
+                if (company != null)
+                {
+                    Session["Logo"] = company.Logo;
+                }
+            }
         }
 
         public AccountController(ApplicationUserManager userManager, ApplicationSignInManager signInManager )
@@ -79,6 +91,7 @@ namespace Kissi.Controllers
             switch (result)
             {
                 case SignInStatus.Success:
+                    Logo(model);
                     return RedirectToLocal(returnUrl);
                 case SignInStatus.LockedOut:
                     return View("Lockout");
@@ -392,6 +405,7 @@ namespace Kissi.Controllers
         public ActionResult LogOff()
         {
             AuthenticationManager.SignOut(DefaultAuthenticationTypes.ApplicationCookie);
+            Session["Logo"] = null;
             return RedirectToAction("Index", "Home");
         }
 
@@ -421,6 +435,7 @@ namespace Kissi.Controllers
             }
 
             base.Dispose(disposing);
+            db.Dispose();
         }
 
         #region Helpers

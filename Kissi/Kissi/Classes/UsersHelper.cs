@@ -25,7 +25,7 @@ namespace Kissi.Classes
                 roleManager.Create(new IdentityRole(roleName));
             }
         }
-        public static bool DeleteUser(string username)
+        public static bool DeleteUser(string username,string roleName)
         {
             var userManager = new UserManager<ApplicationUser>(new UserStore<ApplicationUser>(userContext));
             var userASP = userManager.FindByEmail(username);
@@ -33,7 +33,7 @@ namespace Kissi.Classes
             {
                 return false;
             }
-            var response=userManager.Delete(userASP);
+            var response=userManager.RemoveFromRole(userASP.Id,roleName);
             return response.Succeeded;
         }
 
@@ -67,14 +67,18 @@ namespace Kissi.Classes
         public static void CreateUserASP(string email, string roleName)
         {
             var userManager = new UserManager<ApplicationUser>(new UserStore<ApplicationUser>(userContext));
-
-            var userASP = new ApplicationUser
+            var userASP = userManager.FindByEmail(email);
+            if (userASP==null)
             {
-                Email = email,
-                UserName = email,
-            };
+                 userASP = new ApplicationUser
+                {
+                    Email = email,
+                    UserName = email,
+                };
+                userManager.Create(userASP, email);
 
-            userManager.Create(userASP, email);
+            }
+
             userManager.AddToRole(userASP.Id, roleName);
         }
 

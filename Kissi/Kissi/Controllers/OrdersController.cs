@@ -45,7 +45,7 @@ namespace Kissi.Controllers
         public ActionResult AddProduct()
         {
             var user = db.Users.Where(c => c.UserName == User.Identity.Name).FirstOrDefault();
-            ViewBag.ProductId = new SelectList(CombosHelper.GetProducts(user.CompanyId), "ProductId", "Description");
+            ViewBag.ProductId = new SelectList(CombosHelper.GetProducts(user.CompanyId, false), "ProductId", "Description");
             return PartialView();
         }
         [HttpPost]
@@ -78,7 +78,7 @@ namespace Kissi.Controllers
                 db.SaveChanges();
                 return RedirectToAction("Create");
             }
-            ViewBag.ProductId = new SelectList(CombosHelper.GetProducts(user.CompanyId), "ProductId", "Description");
+            ViewBag.ProductId = new SelectList(CombosHelper.GetProducts(user.CompanyId,false), "ProductId", "Description");
             return PartialView();
         }
         // GET: Orders/Details/5

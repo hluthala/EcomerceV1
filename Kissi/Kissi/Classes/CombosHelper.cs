@@ -56,16 +56,31 @@ namespace Kissi.Classes
         {
            db.Dispose();
         }
+        public static List<Product> GetProducts(int companyId, bool sw)
+        {
+            var products = db.Products.Where(p => p.CompanyId == companyId).ToList();
+            return products.OrderBy(p => p.Description).ToList();
+        }
 
         public static List<Customer> GetCustomers(int companyId)
         {
-            var customer = db.Customers.Where(c=>c.CompanyId==companyId).ToList();
-            customer.Add(new Customer
+            var qry = (from cu in db.Customers
+                       join cc in db.CompanyCustomers on cu.CustomerId equals cc.CustomerId
+                       join co in db.Companies on cc.CompanyId equals co.CompanyId
+                       where co.CompanyId == companyId
+                       select new { cu }).ToList();
+            var customers = new List<Customer>();
+            foreach (var item in qry)
+            {
+                customers.Add(item.cu);
+            }
+
+            customers.Add(new Customer
             {
                 CustomerId = 0,
                 FirstName = "[Select a customer ...]",
             });
-            return customer.OrderBy(c => c.FirstName).ThenBy(c=>c.LastName).ToList();
+            return customers.OrderBy(c => c.FirstName).ThenBy(c=>c.LastName).ToList();
         }
     }
 }

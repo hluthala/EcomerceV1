@@ -21,11 +21,18 @@ namespace Kissi.Controllers
         {
             var user = db.Users.Where(c => c.UserName == User.Identity.Name).FirstOrDefault();
 
-            if (user == null)
+            var qry = (from cu in db.Customers
+                       join cc in db.CompanyCustomers on cu.CustomerId equals cc.CustomerId
+                       join co in db.Companies on cc.CompanyId equals co.CompanyId
+                       where co.CompanyId == user.CompanyId
+                       select new { cu }).ToList();
+
+            var customers = new List<Customer>();
+            foreach (var item in qry)
             {
-                return RedirectToAction("Index", "Home");
+                customers.Add(item.cu);
             }
-            var customers = db.Customers.Include(c => c.City).Where(c => c.CompanyId==user.CompanyId).Include(c => c.Department);
+
             return View(customers.ToList());
         }
 
@@ -53,11 +60,11 @@ namespace Kissi.Controllers
             {
                 return RedirectToAction("Index", "Home");
             }
-            var customer = new Customer { CompanyId = user.CompanyId, };
+            //var customer = new Customer { CompanyId = user.CompanyId, };
             ViewBag.CityId = new SelectList(CombosHelper.GetCities(0), "CityId", "Name");
             //ViewBag.CompanyId = new SelectList(db.Companies, "CompanyId", "Name");
             ViewBag.DepartmentId = new SelectList(CombosHelper.GetDepartment(), "DepartmentId", "Name");
-            return View(customer);
+            return View();
         }
 
         // POST: Customers/Create
@@ -69,15 +76,35 @@ namespace Kissi.Controllers
         {
             if (ModelState.IsValid)
             {
-                db.Customers.Add(customer);
-                var response = DBHelper.SaveChanges(db);
-                if (response.Succeeded)
+            
+                using (var transaccion = db.Database.BeginTransaction())
                 {
-                    UsersHelper.CreateUserASP(customer.UserName, "Customer");
-                    return RedirectToAction("Index");
+                    try
+                    {
+                        db.Customers.Add(customer);
+                        db.SaveChanges();
+
+                        var user = db.Users.Where(u => u.UserName == User.Identity.Name).FirstOrDefault();
+                        var companyCustomer = new CompanyCustomer
+                        {
+                            CompanyId = user.CompanyId,
+                            CustomerId = customer.CustomerId,
+                        };
+
+                        db.CompanyCustomers.Add(companyCustomer);
+                        db.SaveChanges();
+
+                        UsersHelper.CreateUserASP(customer.UserName, "Customer");
+                        transaccion.Commit();
+                        return RedirectToAction("Index");
+                    }
+                    catch (Exception ex)
+                    {
+                        transaccion.Rollback();
+                        ModelState.AddModelError(string.Empty, ex.Message);
+                    }
                 }
-                ModelState.AddModelError(string.Empty, response.Message);
-                
+
             }
 
             ViewBag.CityId = new SelectList(CombosHelper.GetCities(customer.DepartmentId), "CityId", "Name", customer.CityId);
@@ -157,17 +184,29 @@ namespace Kissi.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult DeleteConfirmed(int id)
         {
+            var user = db.Users.Where(c => c.UserName == User.Identity.Name).FirstOrDefault();
+
             Customer customer = db.Customers.Find(id);
-            db.Customers.Remove(customer);
-            var response = DBHelper.SaveChanges(db);
-            if (response.Succeeded)
+          
+            var companycustomer = db.CompanyCustomers.Where(c => c.CompanyId == user.CompanyId && c.CustomerId == customer.CustomerId).FirstOrDefault();
+            using (var transaction =db.Database.BeginTransaction())
             {
-                //UsersHelper.CreateUserASP(customer.UserName, "Customer");
-                UsersHelper.DeleteUser(customer.UserName);
-                return RedirectToAction("Index");
+                db.CompanyCustomers.Remove(companycustomer);
+                db.Customers.Remove(customer);
+                var response = DBHelper.SaveChanges(db);
+                if (response.Succeeded)
+                {
+                    //UsersHelper.CreateUserASP(customer.UserName, "Customer");
+                    transaction.Commit();
+                    //UsersHelper.DeleteUser(customer.UserName, "Customer");
+                    return RedirectToAction("Index");
+
+                }
+                ModelState.AddModelError(string.Empty, response.Message);
+                return View(customer);
             }
-            ModelState.AddModelError(string.Empty, response.Message);
-            return View(customer);
+
+          
         }
         //public JsonResult Getcities(int departmentId)
         //{
