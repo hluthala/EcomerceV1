@@ -5,6 +5,7 @@ using System.Web.Mvc;
 using Kissi.Models;
 using Kissi.Classes;
 using System;
+using PagedList;
 
 namespace Kissi.Controllers
 {
@@ -18,7 +19,7 @@ namespace Kissi.Controllers
         {
             page = (page ?? 1);
             var cities = db.Cities.Include(c => c.Department).OrderBy(c=>c.Department.Name).ThenBy(c=>c.Name);
-            return View(cities.ToPagedList((int)page, 5)););
+            return View(cities.ToPagedList((int)page, 5));
         }
 
         // GET: Cities/Details/5
