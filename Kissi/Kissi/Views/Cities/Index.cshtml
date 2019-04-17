@@ -1,5 +1,6 @@
-﻿@model IEnumerable<Kissi.Models.City>
-
+﻿@*@model IEnumerable<Kissi.Models.City>*@
+@model PagedList.IPagedList<Kissi.Models.City>
+@using PagedList.Mvc;
 @{
     ViewBag.Title = "Cities";
 }
@@ -12,10 +13,10 @@
 <table class="table">
     <tr>
         <th>
-            @Html.DisplayNameFor(model => model.Department.Name)
+            @Html.DisplayNameFor(model => model.FirstOrDefault().Department.Name)
         </th>
         <th>
-            @Html.DisplayNameFor(model => model.Name)
+            @Html.DisplayNameFor(model => model.FirstOrDefault().Name)
         </th>
         <th></th>
     </tr>
@@ -37,3 +38,11 @@
 }
 
 </table>
+Pagination: @(Model.PageCount < Model.PageNumber ? 0 : Model.PageNumber), de: @Model.PageCount
+@Html.PagedListPager(Model, page => Url.Action("Index", new
+{
+    page,
+    sortOrder =
+    ViewBag.CurrentSort,
+    currentFilter = ViewBag.CurrentFilter
+}))

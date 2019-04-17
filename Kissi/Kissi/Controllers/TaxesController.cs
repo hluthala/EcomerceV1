@@ -7,6 +7,7 @@ using System.Net;
 using System.Web;
 using System.Web.Mvc;
 using Kissi.Models;
+using PagedList;
 
 namespace Kissi.Controllers
 {
@@ -16,7 +17,7 @@ namespace Kissi.Controllers
         private KissiContext db = new KissiContext();
 
         // GET: Taxes
-        public ActionResult Index()
+        public ActionResult Index(int? page = null)
         {
             var user = db.Users.Where(c => c.UserName == User.Identity.Name).FirstOrDefault();
 
@@ -24,6 +25,7 @@ namespace Kissi.Controllers
             {
                 return RedirectToAction("Index", "Home");
             }
+            page = (page ?? 1);
             var taxes = db.Taxes.Where(t => t.CompanyId==user.CompanyId);
             return View(taxes.ToList());
         }

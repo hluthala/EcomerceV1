@@ -1,4 +1,7 @@
-﻿@model IEnumerable<Kissi.Models.Tax>
+﻿@*@model IEnumerable<Kissi.Models.Tax>*@
+@model PagedList.IPagedList<Kissi.Models.Tax>
+@using PagedList.Mvc;
+
 
 @{
     ViewBag.Title = "Taxes";
@@ -12,13 +15,13 @@
 <table class="table">
     <tr>
         <th>
-            @Html.DisplayNameFor(model => model.Company.Name)
+            @Html.DisplayNameFor(model => model.FirstOrDefault().Company.Name)
         </th>
         <th>
-            @Html.DisplayNameFor(model => model.Description)
+            @Html.DisplayNameFor(model => model.FirstOrDefault().Description)
         </th>
         <th>
-            @Html.DisplayNameFor(model => model.Rate)
+            @Html.DisplayNameFor(model => model.FirstOrDefault().Rate)
         </th>
         <th></th>
     </tr>
@@ -43,3 +46,11 @@
 }
 
 </table>
+Pagination: @(Model.PageCount < Model.PageNumber ? 0 : Model.PageNumber), de: @Model.PageCount
+@Html.PagedListPager(Model, page => Url.Action("Index", new
+{
+    page,
+    sortOrder =
+    ViewBag.CurrentSort,
+    currentFilter = ViewBag.CurrentFilter
+}))
