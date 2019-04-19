@@ -190,6 +190,7 @@
     <Compile Include="Classes\FilesHelper.cs" />
     <Compile Include="Classes\MailHelper.cs" />
     <Compile Include="Classes\MovementsHelper.cs" />
+    <Compile Include="Classes\UserResponse.cs" />
     <Compile Include="Classes\UsersHelper.cs" />
     <Compile Include="Controllers\API\UsersController.cs" />
     <Compile Include="Controllers\MVC\AccountController.cs" />
